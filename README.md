@@ -33,62 +33,11 @@ Since this GitHub repository is private, this project will first need to be buil
 
 #### AWS IAM
 
-In an AWS account, navigate to the IAM console.
+In an AWS account, navigate to the CloudFormation console.
 
-Make an IAM Policy and Role for AWS CodeBuild.
+Select "Create Stack"
 
-    {
-     "Version": "2012-10-17",
-     "Statement": [
-        {
-            "Sid": "VisualEditor0",
-            "Effect": "Allow",
-            "Action": [
-                "iam:GetRole",
-                "iam:CreateRole",
-                "iam:AttachRolePolicy",
-                "logs:PutLogEvents",
-                "iam:CreatePolicy",
-                "s3:PutObject",
-                "s3:GetObject",
-                "iam:PassRole",
-                "logs:CreateLogStream",
-                "kms:Encrypt",
-                "iam:ListAttachedRolePolicies",
-                "kms:CreateAlias",
-                "kms:DescribeKey",
-                "s3:GetObjectVersion"
-            ],
-            "Resource": [
-                "arn:aws:iam::*:policy/*",
-                "arn:aws:iam::*:role/*",
-                "arn:aws:s3:::codepipeline-us-east-1-*",
-                "arn:aws:kms:*:*:alias/*",
-                "arn:aws:kms:*:*:key/*",
-                "arn:aws:logs:us-east-1:497773990203:log-group:/aws/codebuild/bless-deploy",
-                "arn:aws:logs:us-east-1:497773990203:log-group:/aws/codebuild/bless-deploy:*"
-            ]
-        },
-        {
-            "Sid": "VisualEditor1",
-            "Effect": "Allow",
-            "Action": [
-                "lambda:CreateFunction",
-                "kms:CreateKey"
-            ],
-            "Resource": "*"
-        },
-        {
-            "Sid": "VisualEditor2",
-            "Effect": "Allow",
-            "Action": "logs:CreateLogGroup",
-            "Resource": [
-                "arn:aws:logs:us-east-1:497773990203:log-group:/aws/codebuild/bless-deploy",
-                "arn:aws:logs:us-east-1:497773990203:log-group:/aws/codebuild/bless-deploy:*"
-            ]
-        }
-    ]
-    }
+Either choose "Design a template" and cut and paste the yaml located in bless-deploy.cf in the bless_cloudformation folder into the CloudFormation designer or upload the file under "Upload a template to Amazon S3" 
     
 Attach that policy to an AWS CodeBuild service role.
 
