@@ -37,26 +37,22 @@ Resources:
                   - "kms:CreateAlias"
                   - "kms:DescribeKey"
                   - "s3:GetObjectVersion"
+                  - "lambda:CreateFunction"
+                  - "kms:CreateKey"
                 Effect: Allow
                 Resource: '*'
               - Sid: VisualEditor1
                 Effect: Allow
                 Action:
-                  - "lambda:CreateFunction"
-                  - "kms:CreateKey"
-                Resource: "*"
-              - Sid: VisualEditor2
-                Effect: Allow
-                Action:
                   - "logs:CreateLogGroup"
-                Resource:
-                  - "arn:aws:logs:us-east-1:497773990203:log-group:/aws/codebuild/bless-deploy"
-                  - "arn:aws:logs:us-east-1:497773990203:log-group:/aws/codebuild/bless-deploy:*"
+                  - "logs:CreateLogStream"
+                  - "logs:PutLogEvents"
+                Resource: "*"
 
   CodeBuildProject:
     Type: AWS::CodeBuild::Project
     Properties:
-      Name: bless-deploy-stack
+      Name: bless-deploy
       ServiceRole: !GetAtt BlessCodeBuildServiceRole.Arn
       Artifacts:
         Type: no_artifacts
@@ -67,9 +63,10 @@ Resources:
       Source:
         Auth:
           Type: OAUTH
-        Location: https://github.com/Practical-Code/bless-deploy.git
+        Location: https://github.com/Practical-Code/bless.git
         Type: GITHUB
         BuildSpec: "buildspec.yml"
       Triggers:
         Webhook: true
       TimeoutInMinutes: 10
+
