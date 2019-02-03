@@ -31,6 +31,8 @@ Fork this repository into a personal account.
 
 ## BLESS Deployment Instructions 
 
+### AWS CloudFormation
+
 In an AWS account, navigate to the AWS CloudFormation console and select "Create Stack".
 
 Choose "Design a template" and cut and paste the yaml located in bless-deploy.cf in the bless_cloudformation folder into the CloudFormation designer.
@@ -38,6 +40,10 @@ Choose "Design a template" and cut and paste the yaml located in bless-deploy.cf
 Change the location in the CloudFormation template from https://github.com/Practical-Code/bless.git to the location of your forked repository.
 
 Name and create the CloudFormation stack.
+
+### AWS CodeBuild
+
+In the AWS CodeBuild console, select the bless-deploy project and select "Start Build".
 
 A Lambda function named bless_lambda will now be created and will be able to sign certficates.
 
@@ -111,7 +117,7 @@ Output:
 
 Example:
 
-		$ ./bless_client.py us-east-1 LAMBDANAME aaaa 1.1.1.1 ec2-user $(curl api.ipify.org) "" ~/.ssh/blessid.pub ~/.ssh/blessid-cert.pub
+		$ ./bless_client.py us-east-1 bless_lambda aaaa 1.1.1.1 ec2-user $(curl api.ipify.org) "" ~/.ssh/blessid.pub ~/.ssh/blessid-cert.pub
 
   
 Sign in with the new certificate. 
