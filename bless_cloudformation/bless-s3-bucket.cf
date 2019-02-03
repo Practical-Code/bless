@@ -1,9 +1,0 @@
-"Resources": {
-  "bless3": {
-    "Type": "AWS::S3::Bucket",
-    "Properties": {
-      
-    }, 
-  }
-}
-        
