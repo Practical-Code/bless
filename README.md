@@ -23,17 +23,19 @@ to that SSH Bastion.
 ## Getting Started
 These instructions are to get BLESS up and running in your local development environment.
 
-### BLESS Deployment Instructions 
-Start by forking this repository into a personal account.
-
 #### Authorize CodeBuild using OAUTH to have access to GitHub
-In an AWS,In the CodeBuild console, connect your AWS account to your GitHub account. 
+In an AWS account navigate to the CodeBuild console and connect your AWS account to your GitHub account. 
 
-In AWS CodeBuild console, start to create a build project. Under Source, select "Github" and select "Connect using OAUTH" and select the "Connect to GitHub" button.
+In the AWS CodeBuild console, select "Create Build Project". 
 
-On the GitHub Authorize application page, for organization access , choose "Request access" chose the bless repository, and then choose "Authorize application". 
+Under Source, select "Github" and select "Connect using OAUTH" and select the "Connect to GitHub" button.
+
+On the GitHub Authorize application page, for organization access , choose "Request access" and select the bless repository, and then select "Authorize application". 
 
 After a connection to a GitHub account has been made, finishing building the project will not be necessary.
+
+### BLESS Deployment Instructions 
+Fork this repository into a personal account.
 
 #### AWS CloudFormation
 
@@ -41,13 +43,13 @@ Navigate to the CloudFormation console.
 
 Select "Create Stack".
 
-Either choose "Design a template" and cut and paste the yaml located in bless-deploy.cf in the bless_cloudformation folder into the CloudFormation designer.
+Choose "Design a template" and cut and paste the yaml located in bless-deploy.cf in the bless_cloudformation folder into the CloudFormation designer.
 
 Change the location in the CloudFormation template from https://github.com/Practical-Code/bless.git to the location of your forked repository.
 
 Name and create the CloudFormation stack.
 
-A Lambda function named bless_lambda will now be created and be able to sign certficates.
+A Lambda function named bless_lambda will now be created and will be able to sign certficates.
 
 ## Create a Testing environment and Use BLESS
 Deploy the bash script in the folder bless_bash named ec2_deploy on a command line or follow the step by step instructions. 
