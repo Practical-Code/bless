@@ -74,7 +74,7 @@ Log on to the EC2 instance in the command line.
         
 Go to root user and navigate into the sshd_config file:
 
-       		$ sudo su
+       	$ sudo su
 		$ cd /etc/ssh
 		$ vi sshd_config
         
