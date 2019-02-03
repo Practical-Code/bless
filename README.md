@@ -23,71 +23,36 @@ to that SSH Bastion.
 ## Getting Started
 These instructions are to get BLESS up and running in your local development environment.
 
-These instructions will create an AWS CodeBuild project in the AWS console. 
-
-The two options in the AWS CodeBuild console for operating systems are Ubuntu 14 and Windows. This CodeBuild project can not be created with one of those two operating systems. The operating system can be changed through the AWS CLI, where many more options for operating systems are available.
-
-Since this GitHub repository is private, this project will first need to be built inside the AWS CodeBuild console and then the operating system will have to be updated using AWS CLI. 
-
 ### BLESS Deployment Instructions 
+Start by forking this repository into a personal account.
 
-#### AWS IAM
+#### Authorize CodeBuild using OAUTH to have access to GitHub
+In an AWS,In the CodeBuild console, connect your AWS account to your GitHub account. 
 
-In an AWS account, navigate to the CloudFormation console.
+In AWS CodeBuild console, start to create a build project. Under Source, select "Github" and select "Connect using OAUTH" and select the "Connect to GitHub" button.
 
-Select "Create Stack"
+On the GitHub Authorize application page, for organization access , choose "Request access" chose the bless repository, and then choose "Authorize application". 
 
-Either choose "Design a template" and cut and paste the yaml located in bless-deploy.cf in the bless_cloudformation folder into the CloudFormation designer or upload the file under "Upload a template to Amazon S3" 
-    
-Attach that policy to an AWS CodeBuild service role.
+After a connection to a GitHub account has been made, finishing building the project will not be necessary.
 
-### AWS CodeBuild
-Navigate to the AWS CodeBuild Console and select **Create build project**.
+#### AWS CloudFormation
 
-#### Project Configuration 
-Name the project and give the project a description. 
+Navigate to the CloudFormation console.
 
-#### Source
-Under Source, select **GitHub**.
+Select "Create Stack".
 
-Under repository, select **Repository in my GitHub account**. 
+Either choose "Design a template" and cut and paste the yaml located in bless-deploy.cf in the bless_cloudformation folder into the CloudFormation designer.
 
-Connect to GitHub using a personal access token. 
-Personal access tokens can be generated in a user's GitHub account in setting, using developer settings. 
+Change the location in the CloudFormation template from https://github.com/Practical-Code/bless.git to the location of your forked repository.
 
-For GitHub repository, select **PracticalCode/bless-deploy**.
-
-#### Environment 
-
-For Environment Image, choose **Managed Image**.
-
-For Operating system, choose **Ubuntu** and **Python** and **aws/codebuild/python3.6.5**
-
-For Service role, choose the role that was created for CodeBuild.
-
-#### BuildSpec
-
-Choose **Use a buildspec file**.
-The buildspec will be found by CodeBuild in the GitHub repository.
-
-Select **Create build project**.
-
-### Update CodeBuild Project with AWS CLI
-Make sure AWS CLI is set up and configured. https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-install.html 
-
-Update the BLESS CodeBuild project to a python-3.4-amazonlinux-64:2.1.6 image. Replace $PROJECT_NAME with the name of the CodeBuild project.
-
-       $ aws codebuild update-project --environment image="aws/codebuild/eb-python-3.4-amazonlinux-64:2.1.6",type="LINUX_CONTAINER",computeType="BUILD_GENERAL1_SMALL"  --name $PROJECT_NAME
-
-### AWS CodeBuild Console
-In the AWS Codebuild console, select **Start build** to deploy BLESS.
+Name and create the CloudFormation stack.
 
 A Lambda function named bless_lambda will now be created and be able to sign certficates.
 
 ## Create a Testing environment and Use BLESS
-Use the bash script in the folder bless_bash named ec2_deploy or follow the step by step instructions. 
+Deploy the bash script in the folder bless_bash named ec2_deploy on a command line or follow the step by step instructions. 
 
-If using the bash script, change the variable for AWS_REGION at the tops of the ec2_deploy script if not in region us-east-1.
+If using the bash script, change the variable for AWS_REGION at the top of the ec2_deploy script if not in region us-east-1.
 
 Running this script will:
 
