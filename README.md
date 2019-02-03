@@ -34,14 +34,12 @@ On the GitHub Authorize application page, for organization access , choose "Requ
 
 After a connection to a GitHub account has been made, finishing building the project will not be necessary.
 
-### BLESS Deployment Instructions 
+## BLESS Deployment Instructions 
 Fork this repository into a personal account.
 
-#### AWS CloudFormation
+### AWS CloudFormation
 
-Navigate to the CloudFormation console.
-
-Select "Create Stack".
+Navigate to the CloudFormation console and select "Create Stack".
 
 Choose "Design a template" and cut and paste the yaml located in bless-deploy.cf in the bless_cloudformation folder into the CloudFormation designer.
 
