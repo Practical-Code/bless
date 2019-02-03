@@ -24,22 +24,14 @@ to that SSH Bastion.
 These instructions are to get BLESS up and running in your local development environment.
 
 #### Authorize CodeBuild using OAUTH to have access to GitHub
-In an AWS account navigate to the CodeBuild console and connect your AWS account to your GitHub account. 
 
-In the AWS CodeBuild console, select "Create Build Project". 
+In an AWS account navigate to the CodeBuild console and connect your AWS account to your GitHub account. In the CodeBuild console, select "Create Build Project". Under Source, select "Github" and select "Connect using OAUTH" and select the "Connect to GitHub" button. On the GitHub Authorize application page, for organization access , choose "Request access" and select the bless repository, and then select "Authorize application". After a connection to a GitHub account has been made, finishing building the project will not be necessary.
 
-Under Source, select "Github" and select "Connect using OAUTH" and select the "Connect to GitHub" button.
-
-On the GitHub Authorize application page, for organization access , choose "Request access" and select the bless repository, and then select "Authorize application". 
-
-After a connection to a GitHub account has been made, finishing building the project will not be necessary.
-
-## BLESS Deployment Instructions 
 Fork this repository into a personal account.
 
-### AWS CloudFormation
+## BLESS Deployment Instructions 
 
-Navigate to the CloudFormation console and select "Create Stack".
+In an AWS account, navigate to the AWS CloudFormation console and select "Create Stack".
 
 Choose "Design a template" and cut and paste the yaml located in bless-deploy.cf in the bless_cloudformation folder into the CloudFormation designer.
 
@@ -63,7 +55,7 @@ Running this script will:
 - Log on to the EC2 instance with a new cert.
 
 
-#### Step by Step Instrutions to Create an EC2 Instance and Configure the Instance to Trust the Certificate.
+### Step by Step Instrutions to Create an EC2 Instance and Configure the Instance to Trust the Certificate.
 Create a keypair and an EC2 instance using the AWS EC2 console. 
 
 Save the keypair to a key folder and change the key's permissions to 600.
