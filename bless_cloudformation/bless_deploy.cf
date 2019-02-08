@@ -1,0 +1,72 @@
+AWSTemplateFormatVersion: 2010-09-09
+Resources:
+
+  BlessCodeBuildServiceRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: !Sub CodeBuildRole-${AWS::StackName}
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          -
+            Effect: "Allow"
+            Principal:
+              Service:
+                - "codebuild.amazonaws.com"
+            Action:
+              - "sts:AssumeRole"
+      Path: /service-role/
+      Policies:
+        -
+          PolicyName: bless-codebuild-policy
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              - Action:
+                  - "iam:GetRole"
+                  - "iam:CreateRole"
+                  - "iam:AttachRolePolicy"
+                  - "logs:PutLogEvents"
+                  - "iam:CreatePolicy"
+                  - "s3:PutObject"
+                  - "s3:GetObject"
+                  - "iam:PassRole"
+                  - "logs:CreateLogStream"
+                  - "kms:Encrypt"
+                  - "iam:ListAttachedRolePolicies"
+                  - "kms:CreateAlias"
+                  - "kms:DescribeKey"
+                  - "s3:GetObjectVersion"
+                  - "lambda:CreateFunction"
+                  - "kms:CreateKey"
+                Effect: Allow
+                Resource: '*'
+              - Sid: VisualEditor1
+                Effect: Allow
+                Action:
+                  - "logs:CreateLogGroup"
+                  - "logs:CreateLogStream"
+                  - "logs:PutLogEvents"
+                Resource: "*"
+
+  CodeBuildProject:
+    Type: AWS::CodeBuild::Project
+    Properties:
+      Name: bless-deploy
+      ServiceRole: !GetAtt BlessCodeBuildServiceRole.Arn
+      Artifacts:
+        Type: no_artifacts
+      Environment:
+        Type: LINUX_CONTAINER
+        ComputeType: BUILD_GENERAL1_SMALL
+        Image: aws/codebuild/eb-python-3.4-amazonlinux-64:2.1.6
+      Source:
+        Auth:
+          Type: OAUTH
+        Location: https://github.com/Practical-Code/bless.git
+        Type: GITHUB
+        BuildSpec: "buildspec.yml"
+      Triggers:
+        Webhook: true
+      TimeoutInMinutes: 10
+

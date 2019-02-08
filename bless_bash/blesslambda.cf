@@ -1,0 +1,34 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Metadata": {
+    "AWS::CloudFormation::Designer": {
+      "10350b91-d500-4f85-9a8a-e548a2b294b1": {
+        "size": {
+          "width": 60,
+          "height": 60
+        },
+        "position": {
+          "x": 78,
+          "y": 69
+        },
+        "z": 0
+      }
+    }
+  },
+  "Resources": {
+    "blesslambda": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "Handler": "bless_lambda.lambda_handler",
+        "Role": "LAMBDAROLEARN",
+        "Code": {
+          "S3Bucket": "S3 BUCKET",
+          "S3Key": "bless_lambda.zip"
+        },
+        "Runtime": "python3.6",
+        "Timeout": 10,
+        
+      }
+    }
+  }
+}

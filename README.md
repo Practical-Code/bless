@@ -19,48 +19,39 @@ Function.  If properly configured, you can restrict which IAM Roles can request 
 For example, your SSH Bastion (aka SSH Jump Host) can run with the only IAM Role with access to
 invoke a BLESS Lambda Function configured with the SSH CA key trusted by the instances accessible
 to that SSH Bastion.
-## Prerequistes 
-A configured AWS CLI, Python 3.6, Docker and SSH access to Github.
-
-Deployment bash scripts are for Mac and Linux.
-
-For Windows users, option to run on an AWS Linux EC2 instance or use a Linux subsystem.
 
 ## Getting Started
 These instructions are to get BLESS up and running in your local development environment.
 
-### Installation Instructions
-Clone the repo:
+#### Authorize CodeBuild using OAUTH to have access to GitHub
 
-    $ git clone git@github.com:Syennagraham/bless.git
+In an AWS account navigate to the CodeBuild console and connect your AWS account to your GitHub account. In the CodeBuild console, select "Create Build Project". Under Source, select "Github" and select "Connect using OAUTH" and select the "Connect to GitHub" button. On the GitHub Authorize application page, for organization access , choose "Request access" and select the bless repository, and then select "Authorize application". After a connection to a GitHub account has been made, finishing building the project will not be necessary.
 
-Cd to the bless repo:
+Fork this repository into a personal account.
 
-    $ cd bless
-    
-## BLESS Deployment 
-Run script to deploy BLESS:
+## BLESS Deployment Instructions 
 
-    $ bash ./main_script_deploy
+### AWS CloudFormation
 
-Running this script will:
+In an AWS account, navigate to the AWS CloudFormation console and select "Create Stack".
 
-- Compile lambda dependencies.
-- Create a KMS key.
-- Create a password protected RSA Private key.
-- Encrypt the password for the RSA Private key.
-- Create a directory called Lambda_configs which will contain the RSA public and private keys and configurations for the       Lambda function.
-- Create an IAM policy referencing the KMS key.
-- Create an IAM role for the Lambda.
-- Create a Lambda function that will sign the certificates.
+Choose "Design a template" and cut and paste the yaml located in bless-deploy.cf in the bless_cloudformation folder into the CloudFormation designer.
 
-## Create Environment and Test BLESS
-Change variable for AWS_REGION at the tops of the ec2_deploy script if not in region us-east-1.
+Change the location in the CloudFormation template from https://github.com/Practical-Code/bless.git to the location of your forked repository.
 
-Run script to create environment and create client:
+Name and create the CloudFormation stack.
 
-    $ bash ./ec2_deploy
-    
+### AWS CodeBuild
+
+In the AWS CodeBuild console, select the bless-deploy project and select "Start Build".
+
+A Lambda function named bless_lambda will now be created and will be able to sign certficates.
+
+## Create a Testing environment and Use BLESS
+Deploy the bash script in the folder bless_bash named ec2_deploy on a command line or follow the step by step instructions. 
+
+If using the bash script, change the variable for AWS_REGION at the top of the ec2_deploy script if not in region us-east-1.
+
 Running this script will:
 
 - Create a Key Pair.
@@ -70,6 +61,70 @@ Running this script will:
 - Log on to the EC2 instance with a new cert.
 
 
+### Step by Step Instrutions to Create an EC2 Instance and Configure the Instance to Trust the Certificate.
+Create a keypair and an EC2 instance using the AWS EC2 console. 
+
+Save the keypair to a key folder and change the key's permissions to 600.
+
+        	$ chmod 600 KEYPAIRNAME 
+        
+Log on to the EC2 instance in the command line.
+
+        	$ ssh -i ~/.ssh/KEYPAIRNAME ec2-user@PUBLICIP
+        
+Go to root user and navigate into the sshd_config file:
+
+       	$ sudo su
+		$ cd /etc/ssh
+		$ vi sshd_config
+        
+Add “TrustedUserCAKeys /etc/ssh/cas.pub” to the end of the sshd_config file and create it.
+
+		$ touch cas.pub
+
+Change the permissions on cas.pub:
+
+		$ chmod 600 cas.pub
+
+Go in to the cas.pub file and paste in the bless-ca.pub key:
+
+		$ vi /etc/ssh/cas.pub
+
+Restart the sshd:
+
+		$ systemctl restart sshd
+        
+Exit the EC2 instance:
+		
+		$ exit 
+        
+#### Generate New Certificates
+
+Generate a new certificate:
+
+		$ ssh-keygen -f ~/.ssh/blessid -b 4096 -t rsa -C 'Temporary key for BLESS certificate' -N ''  
+		$ ssh-keygen -y -f ~/.ssh/blessid > ~/.ssh/blessid.pub  
+		$ touch ~/.ssh/blessid-cert.pub  
+		$ ln -s ~/.ssh/blessid-cert.pub ~/.ssh/blessid-cert
+
+Run the bless_client in the bless_client directory. To generate new certificates, replace the information in the bless_client with your own. 
+
+		$ ./bless_client.py
+
+Output:
+
+		$ Usage: bless_client.py region lambda_function_name bastion_user bastion_user_ip remote_usernames bastion_ips bastion_command <id_rsa.pub to sign> <output id_rsa-cert.pub> [kmsauth token]
+
+Example:
+
+		$ ./bless_client.py us-east-1 bless_lambda aaaa 1.1.1.1 ec2-user $(curl api.ipify.org) "" ~/.ssh/blessid.pub ~/.ssh/blessid-cert.pub
+
+  
+Sign in with the new certificate. 
+
+		$ ssh -i ~/.ssh/blessid ec2-user@PUBLICIPADDRESS
+
+
 ## Project resources
 - Source code <https://github.com/netflix/bless>
-- Reference <https://www.youtube.com/watch?v=j-ks2MBeUWw>
+- Issue tracker <https://github.com/netflix/bless/issues>

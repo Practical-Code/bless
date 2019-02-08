@@ -1,0 +1,14 @@
+version: 0.2
+
+phases:
+  install:
+    commands:
+       - cat /etc/os-release
+       - yum install -y python36-pip python36 python36-setuptools
+       - yum install -y git gcc libffi-devel openssl-devel make zip
+       - python36 -m venv venv
+       - source venv/bin/activate &&  make develop
+       - cp -r venv/lib/python3.6/site-packages/. aws_lambda_libs
+       - cp -r venv/lib64/python3.6/site-packages/. aws_lambda_libs
+       - python36 bless_python/bless_deploy.py
+

@@ -1,0 +1,84 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Metadata": {
+    "AWS::CloudFormation::Designer": {
+      "1501ad1b-89fe-4e20-8b05-ab44cce3a660": {
+        "size": {
+          "width": 60,
+          "height": 60
+        },
+        "position": {
+          "x": 45,
+          "y": 117
+        },
+        "z": 0
+      },
+      "01f24e04-33b3-4c2b-94a5-154973f1ac45": {
+        "size": {
+          "width": 60,
+          "height": 60
+        },
+        "position": {
+          "x": 128,
+          "y": 117
+        },
+        "z": 0
+      }
+    }
+  },
+  "Resources": {
+    "IAMR2AFS5": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Principal": {
+                "Service": [
+                  "lambda.amazonaws.com"
+                ]
+              },
+              "Action": [
+                "sts:AssumeRole"
+              ]
+            }
+          ]
+        },
+        "Path": "/",
+        "Policies": [
+          {
+            "PolicyName": "root",
+            "PolicyDocument": {
+              "Version": "2012-10-17",
+              "Statement": [
+                {
+                  "Action": [
+                    "kms:GenerateRandom",
+                    "logs:CreateLogGroup",
+                    "logs:CreateLogStream",
+                    "logs:PutLogEvents"
+                  ],
+                  "Effect": "Allow",
+                  "Resource": "*"
+                },
+                {
+                  "Sid": "AllowKMSDecryption",
+                  "Effect": "Allow",
+                  "Action": [
+                    "kms:Decrypt",
+                    "kms:DescribeKey"
+                  ],
+                  "Resource": [
+                    "KMS KEY ARN"
+                  ]
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  }
+}
